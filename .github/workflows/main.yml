@@ -19,7 +19,7 @@ jobs:
       - name: Extract clean project
         run: |
           mkdir -p project
-          unzip -q MonitoringEXP_Aurora_Clean_Build.zip -d project
+          unzip -q MonitoringEXP_Aurora_Fixed_Build.zip -d project
           test -f project/settings.gradle
           test -f project/app/build.gradle
 
