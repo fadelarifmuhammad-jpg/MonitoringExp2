@@ -1,4 +1,4 @@
-name: Monitoring EXP Aurora Build
+name: Monitoring EXP APK
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup JDK 17
@@ -31,18 +31,29 @@ jobs:
           sdkmanager "platforms;android-35"
           sdkmanager "build-tools;35.0.0"
 
+      - name: Extract FIXED project
+        run: |
+          mkdir -p build_project
+          unzip -q "MonitoringEXP_Aurora_v4_ImportEmail_FIXED.zip" -d build_project
+
+      - name: Check project
+        run: |
+          echo "Isi project:"
+          find build_project -maxdepth 2 -type f | head -50
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Build Debug APK
+      - name: Build APK
+        working-directory: build_project
         run: |
-          gradle assembleDebug --no-daemon
+          gradle :app:assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MonitoringEXP-Aurora-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: MonitoringEXP-Aurora-ImportEmail
+          path: build_project/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
